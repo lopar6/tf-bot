@@ -3,7 +3,6 @@ import os
 import random
 from typing import Tuple
 
-
 import discord
 from discord import message
 from discord import channel
@@ -19,12 +18,13 @@ message_options = (
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 
 intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
 
-myChannel = client.get_channel(888455189609201727)
+myChannel = None
 
 @client.event
 async def on_ready():
@@ -33,7 +33,7 @@ async def on_ready():
     # ! add channel id number here
     # make sure to enable dev mode on discord
     global myChannel
-    myChannel = client.get_channel(888455189609201727)
+    myChannel = client.get_channel(CHANNEL_ID)
     if myChannel is None:
         print("ERROR: channel not found")
     else:
