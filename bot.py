@@ -9,12 +9,32 @@ from discord import channel
 from discord.flags import Intents
 from dotenv import load_dotenv
 
-message_options = (
+MESSAGE_OPTIONS = (
     "Whom the fuk?",
     "New member, who TF is this",
     "Halt. Who tf goes there?",
     "Who to heck?",
     "Whomst is thine?"
+)
+
+WHO_TF_OPTIONS = (
+    "whotf",
+    "who tf",
+    "who tf?",
+    "who tf?!"
+)
+
+TF_REPLY_OPTIONS = (
+    "Hey! That's my job!",
+    "Nice"
+)
+
+EMOJI_ID_OPTIONS = (
+    775567355077853194,
+    847958237797941248,
+    847959550140350507,
+    604862449023320082,
+    847959736238604324
 )
 
 load_dotenv()
@@ -47,8 +67,17 @@ async def on_member_join(member):
     await myChannel.send(getSnarkyMessage())
 
 def getSnarkyMessage() :
-    return random.choice(("Who tf?", random.choice(message_options)))
+    # add check for time and asking why someone joined so late
+    return random.choice(("Who tf?", random.choice(MESSAGE_OPTIONS)))
 
-# todo add tuples of options for the bot to say
-# todo add random selection each time member joins, then send
+# if someone says whotf the bot reacts, occationally it replies
+# if a drawer organizer starts typing it interupts them with a .05% chance
+@client.event
+async def on_message(message):
+    currentChannel = message.channel
+    if message.content.lower() in WHO_TF_OPTIONS:
+        await message.add_reaction(client.get_emoji(random.choice(EMOJI_ID_OPTIONS)))
+        if random.randint(0, 10) == 5:
+            await currentChannel.send(random.choice(TF_REPLY_OPTIONS))
+
 client.run(TOKEN)
