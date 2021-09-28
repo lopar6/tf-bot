@@ -13,7 +13,8 @@ message_options = (
     "Whom the fuk?",
     "New member, who TF is this",
     "Halt. Who tf goes there?",
-    "Who to heck?"
+    "Who to heck?",
+    "Whomst is thine?"
 )
 
 load_dotenv()
@@ -37,7 +38,8 @@ async def on_ready():
     if myChannel is None:
         print("ERROR: channel not found")
     else:
-        await myChannel.send("Who tf am I?")
+        # await myChannel.send("Who tf am I?")
+        print("Who tf am I?")
 
 @client.event
 async def on_member_join(member):
