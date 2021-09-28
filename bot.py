@@ -2,12 +2,15 @@ from gc import enable
 import os
 import random
 from typing import Tuple
-
+from google_images_search import GoogleImagesSearch, google_api
 import discord
 from discord import message
 from discord import channel
 from discord.flags import Intents
 from dotenv import load_dotenv
+import uuid
+
+# https://stackoverflow.com/questions/32500498/how-to-make-a-process-run-on-aws-ec2-even-after-closing-the-local-machine
 
 MESSAGE_OPTIONS = (
     "Whom the fuk?",
@@ -47,6 +50,11 @@ client = discord.Client(intents=intents)
 
 myChannel = None
 
+# set up google search
+GOOGLE_SEARCH_KEY = os.getenv('GOOGLE_SEARCH_KEY')
+PROJECT_CX = os.getenv('PROJECT_CX')
+google = GoogleImagesSearch(GOOGLE_SEARCH_KEY, PROJECT_CX)
+
 @client.event
 async def on_ready():
     await client.wait_until_ready()
@@ -61,19 +69,37 @@ async def on_ready():
         # await myChannel.send("Who tf am I?")
         print("Who tf am I?")
 
+# todo add test if on current clan
 @client.event
 async def on_member_join(member):
     print(f'{member} joined')
     await myChannel.send(getSnarkyMessage())
+    if random.randint(1, 2) == 2:
+        google.search(search_params=_search_params, path_to_dir='images/', custom_image_name="who-tf")
+        with open("images/who-tf.jpg", 'rb') as imageFile:
+            file = discord.File(imageFile)
+            await myChannel.send('Is this you?', file=file)
+        if os.path.exists('images/who-tf.jpg'):
+            os.remove('images/who-tf.jpg')
 
 def getSnarkyMessage() :
     # add check for time and asking why someone joined so late
     return random.choice(("Who tf?", random.choice(MESSAGE_OPTIONS)))
 
-# if someone says whotf the bot reacts, occationally it replies
-# if a drawer organizer starts typing it interupts them with a .05% chance
+# todo idea if a drawer organizer starts typing it interupts them with a .05% chance
+
+# todo replace q "test" with actual queue
+_search_params = {
+    'q': 'test',
+    'num': 1,
+    'safe': 'medium',
+    'fileType': 'jpg'
+}
+
 @client.event
 async def on_message(message):
+    # if someone says whotf the bot reacts, occationally it replies
+    # todo add check if self
     currentChannel = message.channel
     if message.content.lower() in WHO_TF_OPTIONS:
         await message.add_reaction(client.get_emoji(random.choice(EMOJI_ID_OPTIONS)))
