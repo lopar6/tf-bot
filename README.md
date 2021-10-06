@@ -1,3 +1,3 @@
 
 # tf-bot
-A discord bot that replies "who tf?" every time a new member joins. 
+A discord bot that replies "who tf?" every time a new member joins. And other important functions.
